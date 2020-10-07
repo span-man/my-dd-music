@@ -1,0 +1,24 @@
+.c-bottom-content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.c-bottom-content .c-bottom-content-left {
+    width: 240px;
+}
+
+.c-bottom-content .c-bottom-content-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.c-bottom-content .c-bottom-content-center .name-time {
+    display: flex;
+    justify-content: space-between;
+}
+
+.c-bottom-content .c-bottom-content-right {
+    width: 180px;
+}

@@ -1,0 +1,42 @@
+.base-page {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.base-page .c-head {
+    background: #ddd;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.base-page .c-content {
+
+    flex: 1;
+    overflow-y: auto;
+}
+
+.base-page .c-content li {
+    text-align: left;
+    height: 30px;
+    line-height: 30px;
+}
+
+.base-page .c-content li:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+.base-page .c-bottom {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background: #ddd;
+}

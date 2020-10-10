@@ -10,7 +10,7 @@
 
 # production
 /build
-/src/components/C030bottom/1.mp3
+# /src/components/C030bottom/1.mp3
 
 # misc
 .DS_Store

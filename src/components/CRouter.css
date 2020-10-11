@@ -37,6 +37,6 @@
 .base-page .c-bottom {
     height: 80px;
     display: flex;
-    align-items: center;
-    background: #ddd;
+    /* align-items: center; */ 
+    /* background: #ddd; */ 
 }

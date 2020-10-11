@@ -5,6 +5,7 @@ import axios from "axios"
 import common from "../../utils/common";
 import store from "../../store";
 import Axios from "axios";
+import { StepBackwardOutlined, StarFilled, PlayCircleOutlined, StepForwardOutlined, PauseCircleOutlined } from '@ant-design/icons';
 export default class C030bottom extends React.Component {
     dom;
     constructor(props) {
@@ -15,32 +16,59 @@ export default class C030bottom extends React.Component {
             nowIndex: 0, // 当前播放的下标
 
             musicName: "-- --",
+
+            buttonStyle: { fontSize: '24px', color: '#32c3de' },
+            buttonCenterStyle: { fontSize: '30px', color: '#32c3de' }
         }
     }
 
     render() {
         return (
-            <div className="c-bottom-content">
-                <div className="c-bottom-content-left">
-                    <button onClick={() => this.prevOne()}>上一首</button>
-                    <button onClick={() => this.playOrStop()}>播放/暂停</button>
-                    <button onClick={() => this.nextOne()}>下一首</button>
-                </div>
-                <div className="c-bottom-content-center">
-                    {/* 歌名和时间 */}
-                    <div className="name-time">
-        <span>{ this.state.musicName }</span>
-                        <span>00:00 / 04:13</span>
+            <div className="c-bottom-content-box dd-column">
+                {/* 进度条 */}
+                <div className="process-line dd-row dd-v-center">
+                    {/* 游标的盒子 右侧少占游标宽度的一半 */}
+                    <div className="play-node-box dd-row dd-v-center">
+                        {/* 播放游标 */}
+                        <div className="play-node" draggable="true" onDrag={(e) => this.handelDrag(e)} onDragEnd={(e) => this.onDragEnd(e)}>
+                        </div>
                     </div>
-                    {/* 进度条 */}
-                    <div>
+                    {/* 缓存进度条 */}
+                    <div className="cache-line ">
+                        {/* 已经播放的 */}
+                        <div className="had-played dd-row dd-v-center">
+                        </div>
+                    </div>
+                </div>
+                <div className="c-bottom-content">
+                    <div className="dd-row dd-v-center c-bottom-content-left">
+                        <div onClick={() => this.prevOne()} >
+                            <StepBackwardOutlined style={this.state.buttonStyle} />
+                        </div>
+                        <div className="mg-x-px" onClick={() => this.playOrStop()}>
+                            {/* 播放 暂停 */}
+                            {!this.state.playBool ? <PlayCircleOutlined style={this.state.buttonCenterStyle} /> : <PauseCircleOutlined style={this.state.buttonCenterStyle} />}
+                        </div>
+                        <div onClick={() => this.nextOne()}>
+                            <StepForwardOutlined style={this.state.buttonStyle} />
+                        </div>
+                    </div>
+                    <div className="c-bottom-content-center">
+                        {/* 歌名和时间 */}
+                        <div className="name-time">
+                            <span>{this.state.musicName}</span>
+                            <span>00:00 / 04:13</span>
+                        </div>
                         {/* 进度条 */}
-                        <audio id="mydom" preload="auto" controls src={mp31} onEnded={() => this.musicEnd()}>
-                        </audio>
+                        <div>
+                            {/* 进度条 */}
+                            <audio id="mydom" preload="auto" src={mp31} onEnded={() => this.musicEnd()}>
+                            </audio>
+                        </div>
                     </div>
+                    <div className="c-bottom-content-right">
+                        声音
                 </div>
-                <div className="c-bottom-content-right">
-                    声音
                 </div>
             </div>
         )
@@ -138,4 +166,17 @@ export default class C030bottom extends React.Component {
     musicEnd() {
         this.nextOne()
     }
+
+    // 拖拽
+    handelDrag(e) {
+        console.log("拖拽中")
+        document.querySelector(".had-played").style.width = e.clientX + 'px'
+    }
+    // 拖拽
+    onDragEnd(e) {
+        console.log("结束")
+        document.querySelector(".had-played").style.width = e.clientX + 'px'
+    }
+
+
 } 

@@ -5,7 +5,7 @@ import Cb from "./Cb"
 import C010head from "./C010head/index"
 import C020content from "./C020content/index"
 import C030bottom from "./C030bottom/index"
-import "./CRouter.less"
+import "./CRouter.css"
 
 class CRouter extends React.Component {
     render() {

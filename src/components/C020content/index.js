@@ -17,7 +17,7 @@ export default class C020content extends React.Component {
             <div>
                 <ol>
                     {this.state.dataList.map((item, index) => {
-                        return <li onClick={() => this.handelClick(item, index)} key={index} data={item}>{item}</li>
+                        return <li onClick={() => this.handelClick(item, index)} key={index} data={item}>{this.filterName(item)}</li>
                     })}
                 </ol>
             </div>
@@ -25,6 +25,32 @@ export default class C020content extends React.Component {
     }
     componentDidMount() {
         this.getAllData()
+
+        store.subscribe(() => {
+            let obj = store.getState()
+            console.log("搜索项===>", obj.value.value)
+            if (!obj.value.value) {
+                this.getAllData()
+            } else {
+                try {
+                    let tempArr = this.state.OData.filter(item => item.includes(obj.value.value))
+                    console.log("C020content -> componentDidMount -> tempArr", tempArr)
+                    this.setState({
+                        dataList: tempArr
+                    })
+                } catch (error) {
+
+                }
+            }
+        })
+    }
+
+    filterName(args) {
+        if (args && args.includes('/')) {
+            let t = args.split('/')
+            return t[t.length - 1]
+        }
+        return args
     }
 
     getAllData() {
@@ -32,6 +58,7 @@ export default class C020content extends React.Component {
         Axios.get(common.getDomain() + "/getAllData").then(res => {
             try {
                 this.setState({
+                    OData: res.data.dataList,
                     dataList: res.data.dataList
                 })
             } catch (error) {

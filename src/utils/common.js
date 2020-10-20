@@ -18,7 +18,7 @@ export default {
         }
         let tempStr = "";
         let t = Number(_seconds).toFixed(0)
-        console.log("makeMinutes -> t", t)
+        // console.log("makeMinutes -> t", t)
         let minutes = Math.floor(t / 60)
         let second = t - minutes * 60
         return this.myPadStart(minutes, 2) + ":" + this.myPadStart(second, 2)

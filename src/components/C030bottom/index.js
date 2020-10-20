@@ -5,7 +5,8 @@ import axios from "axios"
 import common from "../../utils/common";
 import store from "../../store";
 import Axios from "axios";
-import { StepBackwardOutlined, StarFilled, PlayCircleOutlined, StepForwardOutlined, PauseCircleOutlined } from '@ant-design/icons';
+import $ from "jquery";
+import { StepBackwardOutlined, StarFilled, PlayCircleOutlined, StepForwardOutlined, PauseCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 export default class C030bottom extends React.Component {
     dom;
     aaaabb;
@@ -25,17 +26,18 @@ export default class C030bottom extends React.Component {
             dataList: [], // 所有歌曲的List
             playBool: false, // 播放与否 (而且可以控制初始是否播放)
             nowIndex: 0, // 当前播放的下标
-            
+
             /**
              * 开始时候获取该首歌的 名字 时长 
              * 每隔500ms获取 当前缓存的长度 播放进度
              */
             musicInfo: {
-                duration: "", // 时长 00:00 形式
-                musicName: "-- --", // 歌曲名字
+                duration: "--:--", // 时长 00:00 形式
+                musicName: "Mojito", // 歌曲名字
                 musicLength: 0, // 歌曲时长 秒数
                 bufferedPercent: 0, // 缓冲进度条 百分比
-                playedTime: 0 // 播放进度 时长
+                playedTime: "--:--", // 播放进度 时长
+                totalUrl: '', // 完整的链接
             },
 
             buttonStyle: { fontSize: '24px', color: '#32c3de' },
@@ -61,7 +63,29 @@ export default class C030bottom extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="c-bottom-content">
+                <div className="dd-column">
+                    <div className="c-bottom-content">
+                        <div className="c-bottom-content-center">
+                            {/* 歌名和时间 */}
+                            <div className="name-time dd-row">
+                                <span className="musicName" style={{"flex":1}}>{this.state.musicInfo.musicName}</span>
+                                <span >{this.state.musicInfo.playedTime} / {this.state.musicInfo.duration}</span>
+                            </div>
+                            {/* 放着audio 但是不占地方 */}
+                            <div>
+                                <audio id="mydom" preload="auto" src={mp31}
+                                    onPlaying={() => this.musicPlaying()}
+                                    onTimeUpdate={() => this.musicTimeUpdate()}
+                                    onPause={() => this.musicPause()}
+                                    onEnded={() => this.musicEnd()}
+                                >
+                                </audio>
+                            </div>
+                        </div>
+                        {/* <div className="c-bottom-content-right">
+                        声音
+                    </div> */}
+                    </div>
                     <div className="dd-row dd-v-center c-bottom-content-left">
                         <div onClick={() => this.prevOne()} >
                             <StepBackwardOutlined style={this.state.buttonStyle} />
@@ -73,28 +97,14 @@ export default class C030bottom extends React.Component {
                         <div onClick={() => this.nextOne()}>
                             <StepForwardOutlined style={this.state.buttonStyle} />
                         </div>
-                    </div>
-                    <div className="c-bottom-content-center">
-                        {/* 歌名和时间 */}
-                        <div className="name-time">
-                            <span>{this.state.musicInfo.musicName}</span>
-                            <span>{this.state.musicInfo.playedTime} / {this.state.musicInfo.duration}</span>
-                        </div>
-                        {/* 进度条 */}
-                        <div>
-                            {/* 进度条 */}
-                            <audio id="mydom" preload="auto" src={mp31}
-                                onPlaying={() => this.musicPlaying()}
-                                onTimeUpdate={() => this.musicTimeUpdate()}
-                                onPause={() => this.musicPause()}
-                                onEnded={() => this.musicEnd()}
-                            >
-                            </audio>
+                        {/* 下载 */}
+                        <div onClick={() => this.download(this.state.totalUrl, this.state.musicName)}>
+                            {/* <div> */}
+                            {/* <a href={this.state.totalUrl} download> */}
+                            <DownloadOutlined style={this.state.buttonStyle} />
+                            {/* </a> */}
                         </div>
                     </div>
-                    <div className="c-bottom-content-right">
-                        声音
-                </div>
                 </div>
             </div>
         )
@@ -111,7 +121,9 @@ export default class C030bottom extends React.Component {
         // 播放进度条
         this.playNodeBoxDom = document.querySelector(".play-node-box")
 
-        this.playOrStop()
+        setTimeout(() => {
+            this.playOrStop()
+        }, 500);
 
         store.subscribe(() => {
             let temp = store.getState()
@@ -145,6 +157,9 @@ export default class C030bottom extends React.Component {
                 this.setState({
                     dataList: res.data.dataList
                 })
+                let len = res.data.dataList.length
+                let randomNum = Math.floor(Math.random(len) * len)
+                this.myPlay(res.data.dataList[randomNum])
             } catch (error) {
 
             }
@@ -169,10 +184,12 @@ export default class C030bottom extends React.Component {
         let _musicInfo = this.state.musicInfo
         let arr = urlStr.split('/');
         _musicInfo.musicName = arr[arr.length - 1]
+        let totalUrl = common.getDomain() + urlStr
         this.setState({
-            musicInfo: _musicInfo
+            musicInfo: _musicInfo,
+            totalUrl: totalUrl
         })
-        this.dom.src = common.getDomain() + urlStr
+        this.dom.src = totalUrl
         this.dom.play()
     }
     // 播放或者暂停
@@ -201,6 +218,24 @@ export default class C030bottom extends React.Component {
 
         this.myPlay(this.state.dataList[this.state.nowIndex])
     }
+    // 下载
+    download(src, filename) {
+        //   window.open(this.dom.src)
+
+        // var link = document.createElement('a');
+        // //设置下载的文件名
+        // link.download = filename;
+        // link.style.display = 'none';
+        // //设置下载路径
+        // link.href = src;
+        // //触发点击
+        // document.body.appendChild(link);
+        // link.click();
+        // //移除节点
+        // document.body.removeChild(link);
+
+        $(`<a href="${src}" download="${filename}">Download</a>`)[0].click();
+    }
 
     // 播放开始 播放开始的时候只会触发一次
     musicPlaying(e) {
@@ -214,9 +249,9 @@ export default class C030bottom extends React.Component {
         // _this.playState = true;//播放状态
         console.log("播放中开始")
         console.log("C030bottom -> componentDidMount -> 音频长度 this.dom.duration", this.audioDom.duration)
-        let tempObj = this.state.musicInfo
-        tempObj.musicLength = (this.audioDom.duration)
-        tempObj.duration = common.makeMinutes(this.audioDom.duration)
+        let tempObj = this.state.musicInfo;
+        tempObj.musicLength = (this.audioDom.duration);
+        tempObj.duration = common.makeMinutes(this.audioDom.duration);
         this.setState({
             musicInfo: tempObj
         })
@@ -224,7 +259,7 @@ export default class C030bottom extends React.Component {
 
     // 缓冲进度条 已经播放进度条
     makeDataINeed() {
-        console.log("播放中 每隔一秒 获取一次");
+        // console.log("播放中 每隔一秒 获取一次");
         // 获取已经缓存的时间
         const timeRanges = this.dom.buffered;
         if (timeRanges.length != 0) {
@@ -232,7 +267,7 @@ export default class C030bottom extends React.Component {
 
             // 计算百分比 展示缓冲进度条
             let a = parseInt(tempTimeRangesNum * 100 / this.state.musicInfo.musicLength * 100) / 100
-            console.log("C030bottom -> makeDataINeed -> a", a)
+            // console.log("C030bottom -> makeDataINeed -> a", a)
             let tempObj = this.state.musicInfo
             tempObj.bufferedPercent = a
             this.setState({
@@ -304,11 +339,11 @@ export default class C030bottom extends React.Component {
 
     // 改变播放进度
     changePlayNode() {
-        console.log("当前时间-->", this.dom.currentTime)
+        // console.log("当前时间-->", this.dom.currentTime)
         let timeDisplay = this.dom.currentTime;//获取实时时间
         // 百分比
         let tempPercent = timeDisplay / this.state.musicInfo.musicLength
-        console.log("已经播放的百分比是 -> tempPercent", tempPercent)
+        // console.log("已经播放的百分比是 -> tempPercent", tempPercent)
         let tempNum = tempPercent * this.playNodeBoxDom.clientWidth
         this.playNodeDom.style.left = tempNum + 'px'
         this.hadPlayed.style.width = tempNum + 'px'

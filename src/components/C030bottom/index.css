@@ -59,7 +59,7 @@
 /* 缓存进度条 */
 .cache-line {
     /* width: 100%; */
-    width: 80%;
+    width: 0;
     height: var(--line-h);
     /* background: #ccc; */
     background: green;
@@ -67,7 +67,7 @@
 
 /* 已经播放的 */
 .had-played {
-    width: 60%;
+    width: 0;
     height: var(--line-h);
     background: red;
 }
@@ -94,3 +94,9 @@
 
 
 /* 进度条↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+.musicName{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
